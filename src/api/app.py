@@ -11,7 +11,7 @@ from shared.logging import logger
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
+async def lifespan(app: FastAPI) -> AsyncGenerator[None]:
     try:
         logger.info("Initializing API with startup event")
         yield

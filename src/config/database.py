@@ -27,7 +27,7 @@ AsyncSessionLocal = async_sessionmaker(
 
 
 # Dependency for sync sessions (Alembic, testing)
-def get_sync_db() -> Generator[Session, None, None]:
+def get_sync_db() -> Generator[Session]:
     db = SyncSessionLocal()
     try:
         yield db
@@ -36,7 +36,7 @@ def get_sync_db() -> Generator[Session, None, None]:
 
 
 # Dependency for async sessions (FastAPI, GraphQL)
-async def get_async_db() -> AsyncGenerator[AsyncSession, None]:
+async def get_async_db() -> AsyncGenerator[AsyncSession]:
     async with AsyncSessionLocal() as session:
         try:
             yield session
