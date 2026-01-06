@@ -20,7 +20,6 @@ RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir -r /tmp/requirements.txt
 
 COPY ./src /src
-COPY ./pyproject.toml /src/pyproject.toml
 COPY ./scripts /scripts/
 
 RUN chmod +x /scripts/entrypoint.sh

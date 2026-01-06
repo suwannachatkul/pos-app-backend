@@ -54,7 +54,6 @@ services:
     working_dir: /src
     volumes:
       - ./src:/src:rw
-      - ./pyproject.toml:/src/pyproject.toml:rw
       - ./data:/data:rw
     ports:
       - ${API_EXT_PORT:-8000}:8000
