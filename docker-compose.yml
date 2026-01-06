@@ -1,0 +1,73 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: postgres
+    restart: always
+    environment:
+      POSTGRES_DB: ${DATABASE_NAME:-app_db}
+      POSTGRES_USER: ${DATABASE_USERNAME:-app_user}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD:-app_password}
+    ports:
+      - "${POSTGRES_EXT_PORT:-5432}:5432"
+    volumes:
+      - ${DATABASE_LOCAL_MOUNT_POSITION}:/var/lib/postgresql/data
+    networks:
+      - default
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${DATABASE_USERNAME:-app_user} -d ${DATABASE_NAME:-app_db}",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Isolated database for running tests safely
+  postgres_test:
+    image: postgres:16-alpine
+    container_name: postgres_test
+    restart: always
+    environment:
+      POSTGRES_DB: ${DATABASE_TEST_NAME:-app_db_test}
+      POSTGRES_USER: ${DATABASE_TEST_USERNAME:-app_user}
+      POSTGRES_PASSWORD: ${DATABASE_TEST_PASSWORD:-app_password}
+    ports:
+      - "${POSTGRES_TEST_EXT_PORT:-55432}:5432"
+    networks:
+      - default
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${DATABASE_TEST_USERNAME:-app_user} -d ${DATABASE_TEST_NAME:-app_db_test}",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: api
+    working_dir: /src
+    volumes:
+      - ./src:/src:rw
+      - ./pyproject.toml:/src/pyproject.toml:rw
+      - ./data:/data:rw
+    ports:
+      - ${API_EXT_PORT:-8000}:8000
+    env_file:
+      - .env
+    command: bash -c "entrypoint.sh"
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8000/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
