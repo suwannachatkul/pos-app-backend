@@ -26,7 +26,7 @@ def test_engine():
 
 
 @pytest.fixture()
-def db_session(test_engine) -> Generator[Session, None, None]:
+def db_session(test_engine) -> Generator[Session]:
     TestSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=test_engine)
     db = TestSessionLocal()
     try:
