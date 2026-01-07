@@ -1,4 +1,5 @@
 from collections.abc import AsyncGenerator, Generator
+from contextlib import contextmanager
 
 from sqlalchemy import create_engine
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
@@ -42,3 +43,21 @@ async def get_async_db() -> AsyncGenerator[AsyncSession]:
             yield session
         finally:
             await session.close()
+
+
+@contextmanager
+def db_scope() -> Generator[Session]:
+    """
+    Helps to manage database operations outside of FastAPI.
+    Ensures that a group of operations are treated as a single transaction.
+    Easy for setup and teardown of sessions.
+    """
+    db = SyncSessionLocal()
+    try:
+        yield db
+    except Exception as e:
+        db.rollback()
+        raise e
+    finally:
+        db.expire_on_commit = False
+        db.close()
