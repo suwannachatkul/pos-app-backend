@@ -3,7 +3,7 @@ from .common_fields import (
     IdMixin,
     TimestampsMixin,
 )
-from .payment.payment_method import PaymentMethod
+from .payment import PaymentMethod, Transaction
 
 
 __all__ = [
@@ -11,4 +11,5 @@ __all__ = [
     "IdMixin",
     "PaymentMethod",
     "TimestampsMixin",
+    "Transaction",
 ]
