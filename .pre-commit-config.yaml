@@ -37,4 +37,4 @@ repos:
     hooks:
       - id: codespell
         additional_dependencies: [tomli]
-        args: ["--write-changes"]
+        args: ["--write-changes", "--ignore-words-list=selectin"]

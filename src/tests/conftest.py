@@ -12,6 +12,10 @@ from config.database import get_sync_db as app_get_sync_db
 from config.settings import settings
 
 
+# Import shared fixtures
+pytest_plugins = ["tests.fixtures.payment_methods", "tests.fixtures.transactions"]
+
+
 @pytest.fixture(scope="session")
 def test_engine():
     # Build test engine using settings from src/config
@@ -27,12 +31,20 @@ def test_engine():
 
 @pytest.fixture()
 def db_session(test_engine) -> Generator[Session]:
-    TestSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=test_engine)
+    # Create a connection and begin a transaction
+    connection = test_engine.connect()
+    transaction = connection.begin()
+
+    # Create session bound to this connection
+    TestSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=connection)
     db = TestSessionLocal()
+
     try:
         yield db
     finally:
         db.close()
+        transaction.rollback()  # Rollback the transaction to reset database state
+        connection.close()
 
 
 @pytest.fixture()
