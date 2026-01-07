@@ -12,7 +12,7 @@ from api.models.payment.transaction import Transaction
 def transaction_basic_cash(db_session, payment_method_cash):
     """Create a basic cash transaction."""
     transaction = Transaction(
-        customer_id="CUST001",
+        customer_id=1001,
         price=Decimal("100.00"),
         price_modifier=Decimal("0.9500"),
         final_price=Decimal("95.00"),
@@ -30,7 +30,7 @@ def transaction_basic_cash(db_session, payment_method_cash):
 def transaction_credit_card(db_session, payment_method_credit_card):
     """Create a credit card transaction with additional data."""
     transaction = Transaction(
-        customer_id="CUST002",
+        customer_id=1002,
         price=Decimal("250.50"),
         price_modifier=Decimal("0.9800"),
         final_price=Decimal("245.49"),
@@ -49,7 +49,7 @@ def transaction_credit_card(db_session, payment_method_credit_card):
 def transaction_bank_transfer(db_session, payment_method_bank_transfer):
     """Create a bank transfer transaction with zero points."""
     transaction = Transaction(
-        customer_id="CUST003",
+        customer_id=1003,
         price=Decimal("1000.00"),
         price_modifier=Decimal("1.0000"),
         final_price=Decimal("1000.00"),
@@ -68,7 +68,7 @@ def transaction_bank_transfer(db_session, payment_method_bank_transfer):
 def transaction_no_payment_method(db_session):
     """Create a transaction without payment method (orphaned transaction)."""
     transaction = Transaction(
-        customer_id="CUST004",
+        customer_id=1004,
         price=Decimal("50.00"),
         price_modifier=Decimal("1.0000"),
         final_price=Decimal("50.00"),
@@ -87,7 +87,7 @@ def multiple_transactions_same_customer(
     db_session, payment_method_cash, payment_method_credit_card
 ):
     """Create multiple transactions for the same customer."""
-    customer_id = "CUST005"
+    customer_id = 1005
     base_time = datetime(2025, 1, 19, 12, 0, 0, tzinfo=UTC)
 
     transactions = [
