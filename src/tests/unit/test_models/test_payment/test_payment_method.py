@@ -11,62 +11,37 @@ from api.models.payment.payment_method import PaymentMethod
 class TestPaymentMethodModel:
     """Test suite for PaymentMethod model."""
 
-    def test_create_payment_methods(self, db_session):
-        """Test creating payment methods with various configurations."""
-        # Create payment method without additional schema
-        pm1 = PaymentMethod(
-            name="Cash",
-            is_active=True,
-            min_modifier=Decimal("0.9500"),
-            max_modifier=Decimal("1.0500"),
-            points_modifier=Decimal("1.0000"),
-        )
-        db_session.add(pm1)
-        db_session.commit()
-        db_session.refresh(pm1)
-
+    def test_create_payment_method_basic(self, payment_method_cash):
+        """Test creating a basic payment method using fixture."""
         # Verify basic payment method
-        assert pm1.id is not None
-        assert pm1.name == "Cash"
-        assert pm1.is_active is True
-        assert pm1.min_modifier == Decimal("0.9500")
-        assert pm1.max_modifier == Decimal("1.0500")
-        assert pm1.points_modifier == Decimal("1.0000")
-        assert pm1.additional_data_schema is None
-        assert pm1.created_at is not None
-        assert pm1.updated_at is not None
+        assert payment_method_cash.id is not None
+        assert payment_method_cash.name == "CASH_TEST"
+        assert payment_method_cash.is_active is True
+        assert payment_method_cash.min_modifier == Decimal("0.9000")
+        assert payment_method_cash.max_modifier == Decimal("1.0000")
+        assert payment_method_cash.points_modifier == Decimal("0.0500")
+        assert payment_method_cash.additional_data_schema is None
+        assert payment_method_cash.created_at is not None
+        assert payment_method_cash.updated_at is not None
 
-        # Create payment method with additional data schema
-        schema = {
-            "type": "object",
-            "properties": {
-                "card_number": {"type": "string"},
-                "cvv": {"type": "string"},
-            },
-            "required": ["card_number"],
-        }
-        pm2 = PaymentMethod(
-            name="Credit Card",
-            is_active=False,
-            min_modifier=Decimal("0.1234"),
-            max_modifier=Decimal("9.9876"),
-            points_modifier=Decimal("1.2345"),
-            additional_data_schema=schema,
+    def test_create_payment_method_with_schema(self, payment_method_credit_card):
+        """Test creating a payment method with additional data schema."""
+        # Verify payment method with schema
+        assert payment_method_credit_card.id is not None
+        assert payment_method_credit_card.name == "VISA_TEST"
+        assert payment_method_credit_card.is_active is True
+        assert payment_method_credit_card.min_modifier == Decimal("0.9500")
+        assert payment_method_credit_card.max_modifier == Decimal("1.0000")
+        assert payment_method_credit_card.points_modifier == Decimal("0.0300")
+        assert payment_method_credit_card.additional_data_schema is not None
+        assert (
+            "last4" in payment_method_credit_card.additional_data_schema["properties"]
         )
-        db_session.add(pm2)
-        db_session.commit()
-        db_session.refresh(pm2)
 
-        # Verify payment method with schema and decimal precision
-        assert pm2.id is not None
-        assert pm2.id != pm1.id
-        assert pm2.name == "Credit Card"
-        assert pm2.is_active is False
-        assert pm2.min_modifier == Decimal("0.1234")
-        assert pm2.max_modifier == Decimal("9.9876")
-        assert pm2.points_modifier == Decimal("1.2345")
-        assert pm2.additional_data_schema == schema
-        assert "card_number" in pm2.additional_data_schema["properties"]
+    def test_create_inactive_payment_method(self, payment_method_inactive):
+        """Test creating an inactive payment method."""
+        assert payment_method_inactive.id is not None
+        assert payment_method_inactive.is_active is False
 
     def test_unique_name_constraint(self, db_session):
         """Test that payment method name must be unique."""
@@ -97,7 +72,7 @@ class TestPaymentMethodModel:
     def test_default_is_active_value(self, db_session):
         """Test that is_active defaults to True when not specified."""
         pm = PaymentMethod(
-            name="PAYPAL",
+            name="PAYPAL_TEST",
             min_modifier=Decimal("1.0000"),
             max_modifier=Decimal("1.0000"),
             points_modifier=Decimal("1.0000"),
@@ -108,28 +83,36 @@ class TestPaymentMethodModel:
 
         assert pm.is_active is True
 
-    def test_update_payment_method(self, db_session):
+    def test_update_payment_method(self, db_session, payment_method_cash):
         """Test updating payment method fields."""
-        pm = PaymentMethod(
-            name="POINTS",
-            is_active=True,
-            min_modifier=Decimal("1.0000"),
-            max_modifier=Decimal("1.0000"),
-            points_modifier=Decimal("1.0000"),
-        )
-        db_session.add(pm)
-        db_session.commit()
-        original_created_at = pm.created_at
+        original_created_at = payment_method_cash.created_at
 
         # Update fields
-        pm.is_active = False
-        pm.min_modifier = Decimal("0.8500")
-        pm.max_modifier = Decimal("1.1500")
+        payment_method_cash.is_active = False
+        payment_method_cash.min_modifier = Decimal("0.8500")
+        payment_method_cash.max_modifier = Decimal("1.1500")
         db_session.commit()
-        db_session.refresh(pm)
+        db_session.refresh(payment_method_cash)
 
-        assert pm.is_active is False
-        assert pm.min_modifier == Decimal("0.8500")
-        assert pm.max_modifier == Decimal("1.1500")
-        assert pm.created_at == original_created_at
-        assert pm.updated_at >= pm.created_at
+        assert payment_method_cash.is_active is False
+        assert payment_method_cash.min_modifier == Decimal("0.8500")
+        assert payment_method_cash.max_modifier == Decimal("1.1500")
+        assert payment_method_cash.created_at == original_created_at
+        assert payment_method_cash.updated_at >= payment_method_cash.created_at
+
+    def test_all_default_payment_methods_created(self, all_default_payment_methods):
+        """Test that all default payment methods are created correctly."""
+        assert len(all_default_payment_methods) == 12
+
+        # Verify specific payment methods exist
+        payment_method_names = [pm.name for pm in all_default_payment_methods]
+        assert "CASH" in payment_method_names
+        assert "VISA" in payment_method_names
+        assert "MASTERCARD" in payment_method_names
+        assert "BANK_TRANSFER" in payment_method_names
+        assert "POINTS" in payment_method_names
+
+        # Verify one with schema
+        visa = next(pm for pm in all_default_payment_methods if pm.name == "VISA")
+        assert visa.additional_data_schema is not None
+        assert "last4" in visa.additional_data_schema["properties"]
