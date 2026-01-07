@@ -2,10 +2,17 @@ from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, status
+from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.exceptions import HTTPException as StarletteHTTPException
 from starlette.responses import JSONResponse
 
 from api.graphql.schema import create_graphql_router
+from api.helpers.error.error_handler import (
+    general_exception_handler,
+    http_exception_handler,
+)
+from api.helpers.error.exceptions import APIValidationError
 from config.settings import settings
 from shared.logging import logger
 
@@ -29,6 +36,15 @@ def init_app() -> FastAPI:
         redoc_url=None if settings.is_production else "/redoc",
         lifespan=lifespan,
     )
+
+    # Register exception handlers
+    app.add_exception_handler(StarletteHTTPException, http_exception_handler)
+
+    async def validation_exception_handler(request, exc):
+        return await http_exception_handler(request, APIValidationError(str(exc)))
+
+    app.add_exception_handler(RequestValidationError, validation_exception_handler)
+    app.add_exception_handler(Exception, general_exception_handler)
 
     # CORS configuration
     origins = [str(origin).strip("/") for origin in settings.CORS_ORIGINS]

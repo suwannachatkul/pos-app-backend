@@ -1,0 +1,16 @@
+{
+  "DEFAULT": "不明なエラーが発生しました。",
+  "UNKNOWN_ERROR": "不明なエラーが発生しました。",
+  "api.GENERAL_VALIDATION_ERROR": "無効な入力パラメータ。'{{msg}}'",
+  "api.BAD_REQUEST": "不正なリクエストです。",
+  "api.UNAUTHORIZED": "認証が必要です。",
+  "api.FORBIDDEN": "アクセスが禁止されています。",
+  "api.NOT_FOUND": "リソースが見つかりません: {{resource}} (ID: {{id}})",
+  "api.CONFLICT": "リソースが競合しています: {{resource}} '{{value}}' は既に存在します。",
+  "auth.CREDENTIALS_EXCEPTION": "認証に失敗しました。",
+  "auth.NOT_AUTHORIZED": "権限がありません。",
+  "auth.USER_NAME_ALREADY_EXISTS": "ユーザー名 '{{username}}' は既に存在します。",
+  "auth.INVALID_TOKEN": "無効または期限切れのトークンです。",
+  "graphql.QUERY_ERROR": "GraphQLクエリエラー: {{error}}",
+  "graphql.MUTATION_ERROR": "GraphQLミューテーションエラー: {{error}}"
+}

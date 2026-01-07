@@ -1,3 +1,4 @@
+import json
 from functools import lru_cache
 from pathlib import Path
 from typing import Annotated, Any
@@ -42,7 +43,30 @@ class Settings(BaseSettings):
     # CORS
     CORS_ORIGINS: Annotated[list[AnyUrl] | str, BeforeValidator(parse_cors)] = []
 
+    # Error message settings
+    error_message_path: dict = {
+        "en": str(
+            SRC_BASE_DIR / "api" / "helpers" / "error" / "translations" / "en.json"
+        ),
+        "ja": str(
+            SRC_BASE_DIR / "api" / "helpers" / "error" / "translations" / "ja.json"
+        ),
+    }
+
     model_config = SettingsConfigDict(env_file=".env")
+
+    @property
+    def error_message_dict(self) -> dict:
+        """Load and return error message translations from JSON files."""
+        error_message_dict = {}
+        for key, value in self.error_message_path.items():
+            try:
+                with open(value, encoding="utf-8") as f:
+                    error_message_dict[key] = json.load(f)
+            except FileNotFoundError:
+                # Fallback to default message if file not found
+                error_message_dict[key] = {"DEFAULT": "An error occurred."}
+        return error_message_dict
 
     @property
     def database_url(self) -> str:

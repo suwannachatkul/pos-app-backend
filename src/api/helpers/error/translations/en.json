@@ -1,0 +1,16 @@
+{
+  "DEFAULT": "An error occurred.",
+  "UNKNOWN_ERROR": "Unknown error occurred.",
+  "api.GENERAL_VALIDATION_ERROR": "Invalid Input Parameters. '{{msg}}'",
+  "api.BAD_REQUEST": "Bad request.",
+  "api.UNAUTHORIZED": "Unauthorized access.",
+  "api.FORBIDDEN": "Access forbidden.",
+  "api.NOT_FOUND": "Resource not found: {{resource}} (ID: {{id}}).",
+  "api.CONFLICT": "Resource conflict: {{resource}} '{{value}}' already exists.",
+  "auth.CREDENTIALS_EXCEPTION": "Invalid credentials.",
+  "auth.NOT_AUTHORIZED": "Not authorized.",
+  "auth.USER_NAME_ALREADY_EXISTS": "User name '{{username}}' already exists.",
+  "auth.INVALID_TOKEN": "Invalid or expired token.",
+  "graphql.QUERY_ERROR": "GraphQL query error: {{error}}",
+  "graphql.MUTATION_ERROR": "GraphQL mutation error: {{error}}"
+}
