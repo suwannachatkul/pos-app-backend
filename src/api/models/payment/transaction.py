@@ -1,7 +1,7 @@
 from datetime import datetime
 from decimal import Decimal
 
-from sqlalchemy import ForeignKey, Integer, Numeric, String
+from sqlalchemy import BigInteger, ForeignKey, Integer, Numeric, String
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -14,7 +14,7 @@ class Transaction(Base, IdMixin, TimestampsMixin):
 
     __tablename__: str = "transactions"
 
-    customer_id: Mapped[str] = mapped_column(String(255), nullable=False, index=True)
+    customer_id: Mapped[int] = mapped_column(BigInteger, nullable=False, index=True)
     price: Mapped[Decimal] = mapped_column(Numeric(10, 2), nullable=False)
     price_modifier: Mapped[Decimal] = mapped_column(Numeric(6, 4), nullable=False)
     final_price: Mapped[Decimal] = mapped_column(Numeric(10, 2), nullable=False)
