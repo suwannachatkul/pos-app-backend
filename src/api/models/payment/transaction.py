@@ -25,7 +25,7 @@ class Transaction(Base, IdMixin, TimestampsMixin):
         nullable=True,
         index=True,
     )
-    additional_data: Mapped[dict | None] = mapped_column(JSONB, nullable=True)
+    additional_item: Mapped[dict | None] = mapped_column(JSONB, nullable=True)
     transaction_datetime: Mapped[datetime] = mapped_column(
         name="datetime", nullable=False, index=True
     )

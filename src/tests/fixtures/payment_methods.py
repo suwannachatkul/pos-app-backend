@@ -44,7 +44,7 @@ def payment_method_credit_card(db_session):
         min_modifier=Decimal("0.9500"),
         max_modifier=Decimal("1.0000"),
         points_modifier=Decimal("0.0300"),
-        additional_data_schema=schema,
+        additional_item_schema=schema,
     )
     db_session.add(pm)
     db_session.commit()
@@ -88,7 +88,7 @@ def payment_method_bank_transfer(db_session):
         min_modifier=Decimal("1.0000"),
         max_modifier=Decimal("1.0000"),
         points_modifier=Decimal("0.0000"),
-        additional_data_schema=schema,
+        additional_item_schema=schema,
     )
     db_session.add(pm)
     db_session.commit()
@@ -100,6 +100,7 @@ def payment_method_bank_transfer(db_session):
 def all_default_payment_methods(db_session):
     """Create all default payment methods as defined in initializer."""
     payment_methods = []
+    # TODO: refactor this if DEFAULT_PAYMENT_METHODS move out of initializer
     for pm_data in DEFAULT_PAYMENT_METHODS:
         # Convert float modifiers to Decimal for precision
         pm = PaymentMethod(
@@ -108,7 +109,7 @@ def all_default_payment_methods(db_session):
             min_modifier=Decimal(str(pm_data["min_modifier"])),
             max_modifier=Decimal(str(pm_data["max_modifier"])),
             points_modifier=Decimal(str(pm_data["points_modifier"])),
-            additional_data_schema=pm_data.get("additional_data_schema"),
+            additional_item_schema=pm_data.get("additional_item_schema"),
         )
         db_session.add(pm)
         payment_methods.append(pm)

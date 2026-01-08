@@ -36,7 +36,7 @@ def transaction_credit_card(db_session, payment_method_credit_card):
         final_price=Decimal("245.49"),
         points=7,
         payment_method=payment_method_credit_card.name,
-        additional_data={"last4": "1234", "card_type": "VISA"},
+        additional_item={"last4": "1234", "card_type": "VISA"},
         transaction_datetime=datetime(2025, 1, 16, 14, 30, 0, tzinfo=UTC),
     )
     db_session.add(transaction)
@@ -55,7 +55,7 @@ def transaction_bank_transfer(db_session, payment_method_bank_transfer):
         final_price=Decimal("1000.00"),
         points=0,
         payment_method=payment_method_bank_transfer.name,
-        additional_data={"bank": "Test Bank", "account_number": "123456789"},
+        additional_item={"bank": "Test Bank", "account_number": "123456789"},
         transaction_datetime=datetime(2025, 1, 17, 9, 15, 0, tzinfo=UTC),
     )
     db_session.add(transaction)

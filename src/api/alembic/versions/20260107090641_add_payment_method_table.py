@@ -26,7 +26,7 @@ def upgrade() -> None:
         sa.Column("min_modifier", sa.Numeric(precision=6, scale=4), nullable=False),
         sa.Column("max_modifier", sa.Numeric(precision=6, scale=4), nullable=False),
         sa.Column("points_modifier", sa.Numeric(precision=6, scale=4), nullable=False),
-        sa.Column("additional_data_schema", sa.JSON(), nullable=True),
+        sa.Column("additional_item_schema", sa.JSON(), nullable=True),
         sa.Column(
             "created_at",
             sa.TIMESTAMP(),

@@ -9,7 +9,7 @@ DEFAULT_PAYMENT_METHODS = [
         "min_modifier": 1.0,
         "max_modifier": 1.02,
         "points_modifier": 0.05,
-        "additional_data_schema": {
+        "additional_item_schema": {
             "type": "object",
             "properties": {
                 "courier": {
@@ -26,7 +26,7 @@ DEFAULT_PAYMENT_METHODS = [
         "min_modifier": 0.95,
         "max_modifier": 1.0,
         "points_modifier": 0.03,
-        "additional_data_schema": {
+        "additional_item_schema": {
             "type": "object",
             "properties": {
                 "last4": {
@@ -43,7 +43,7 @@ DEFAULT_PAYMENT_METHODS = [
         "min_modifier": 0.95,
         "max_modifier": 1.0,
         "points_modifier": 0.03,
-        "additional_data_schema": {
+        "additional_item_schema": {
             "type": "object",
             "properties": {"last4": {"type": "string", "pattern": "^[0-9]{4}$"}},
             "required": ["last4"],
@@ -54,7 +54,7 @@ DEFAULT_PAYMENT_METHODS = [
         "min_modifier": 0.98,
         "max_modifier": 1.01,
         "points_modifier": 0.02,
-        "additional_data_schema": {
+        "additional_item_schema": {
             "type": "object",
             "properties": {"last4": {"type": "string", "pattern": "^[0-9]{4}$"}},
             "required": ["last4"],
@@ -65,7 +65,7 @@ DEFAULT_PAYMENT_METHODS = [
         "min_modifier": 0.95,
         "max_modifier": 1.0,
         "points_modifier": 0.05,
-        "additional_data_schema": {
+        "additional_item_schema": {
             "type": "object",
             "properties": {"last4": {"type": "string", "pattern": "^[0-9]{4}$"}},
             "required": ["last4"],
@@ -94,7 +94,7 @@ DEFAULT_PAYMENT_METHODS = [
         "min_modifier": 1.0,
         "max_modifier": 1.0,
         "points_modifier": 0.0,
-        "additional_data_schema": {
+        "additional_item_schema": {
             "type": "object",
             "properties": {
                 "bank": {"type": "string"},
@@ -108,7 +108,7 @@ DEFAULT_PAYMENT_METHODS = [
         "min_modifier": 0.9,
         "max_modifier": 1.0,
         "points_modifier": 0.0,
-        "additional_data_schema": {
+        "additional_item_schema": {
             "type": "object",
             "properties": {
                 "bank": {"type": "string"},

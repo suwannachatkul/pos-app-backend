@@ -22,7 +22,7 @@ class PaymentMethod(Base, IdMixin, TimestampsMixin):
     points_modifier: Mapped[Decimal] = mapped_column(Numeric(6, 4), nullable=False)
 
     # Validation schema (None = no additional data required)
-    additional_data_schema: Mapped[dict | None] = mapped_column(JSONB, nullable=True)
+    additional_item_schema: Mapped[dict | None] = mapped_column(JSONB, nullable=True)
 
     # back-reference
     transactions: Mapped[list["Transaction"]] = relationship(
