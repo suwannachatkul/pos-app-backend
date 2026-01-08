@@ -20,16 +20,16 @@ class TestTransactionModel:
         assert transaction_basic_cash.price_modifier == Decimal("0.9500")
         assert transaction_basic_cash.final_price == Decimal("95.00")
         assert transaction_basic_cash.points == 5
-        assert transaction_basic_cash.additional_data is None
+        assert transaction_basic_cash.additional_item is None
         assert transaction_basic_cash.created_at is not None
         assert transaction_basic_cash.updated_at is not None
 
-    def test_create_transaction_with_additional_data(self, transaction_credit_card):
+    def test_create_transaction_with_additional_item(self, transaction_credit_card):
         """Test creating a transaction with additional payment data."""
         # Verify transaction with additional data using fixture
-        assert transaction_credit_card.additional_data is not None
-        assert transaction_credit_card.additional_data["last4"] == "1234"
-        assert transaction_credit_card.additional_data["card_type"] == "VISA"
+        assert transaction_credit_card.additional_item is not None
+        assert transaction_credit_card.additional_item["last4"] == "1234"
+        assert transaction_credit_card.additional_item["card_type"] == "VISA"
         assert transaction_credit_card.customer_id == 1002
         assert transaction_credit_card.price == Decimal("250.50")
 
@@ -141,12 +141,12 @@ class TestTransactionModel:
 
         # Update transaction
         transaction_basic_cash.points = 10
-        transaction_basic_cash.additional_data = {"note": "Updated transaction"}
+        transaction_basic_cash.additional_item = {"note": "Updated transaction"}
         db_session.commit()
         db_session.refresh(transaction_basic_cash)
 
         assert transaction_basic_cash.points == 10
-        assert transaction_basic_cash.additional_data["note"] == "Updated transaction"
+        assert transaction_basic_cash.additional_item["note"] == "Updated transaction"
         assert transaction_basic_cash.created_at == original_created_at
         assert transaction_basic_cash.updated_at >= transaction_basic_cash.created_at
 

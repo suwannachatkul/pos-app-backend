@@ -20,7 +20,7 @@ class TestPaymentMethodModel:
         assert payment_method_cash.min_modifier == Decimal("0.9000")
         assert payment_method_cash.max_modifier == Decimal("1.0000")
         assert payment_method_cash.points_modifier == Decimal("0.0500")
-        assert payment_method_cash.additional_data_schema is None
+        assert payment_method_cash.additional_item_schema is None
         assert payment_method_cash.created_at is not None
         assert payment_method_cash.updated_at is not None
 
@@ -33,9 +33,9 @@ class TestPaymentMethodModel:
         assert payment_method_credit_card.min_modifier == Decimal("0.9500")
         assert payment_method_credit_card.max_modifier == Decimal("1.0000")
         assert payment_method_credit_card.points_modifier == Decimal("0.0300")
-        assert payment_method_credit_card.additional_data_schema is not None
+        assert payment_method_credit_card.additional_item_schema is not None
         assert (
-            "last4" in payment_method_credit_card.additional_data_schema["properties"]
+            "last4" in payment_method_credit_card.additional_item_schema["properties"]
         )
 
     def test_create_inactive_payment_method(self, payment_method_inactive):
@@ -114,5 +114,5 @@ class TestPaymentMethodModel:
 
         # Verify one with schema
         visa = next(pm for pm in all_default_payment_methods if pm.name == "VISA")
-        assert visa.additional_data_schema is not None
-        assert "last4" in visa.additional_data_schema["properties"]
+        assert visa.additional_item_schema is not None
+        assert "last4" in visa.additional_item_schema["properties"]
