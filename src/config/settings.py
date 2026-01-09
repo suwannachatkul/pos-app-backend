@@ -34,10 +34,16 @@ class Settings(BaseSettings):
     DATABASE_TEST_USERNAME: str = "app_user"
     DATABASE_TEST_PASSWORD: str = "app_password"
 
-    # JWT (for future auth)
-    JWT_SECRET_KEY: str
-    JWT_ALGORITHM: str = "HS256"
-    JWT_EXPIRE_MINUTES: int = 30
+    # Redis
+    REDIS_HOST: str = "redis"
+    REDIS_PORT: int = 6379
+    REDIS_DB: int = 0
+    REDIS_PASSWORD: str | None = None
+
+    # Cache config
+    CACHE_ENABLED: bool = True
+    CACHE_DEFAULT_TTL: int = 300  # seconds
+    PAYMENT_METHOD_CACHE_TTL: int = 300  # seconds
 
     # CORS
     CORS_ORIGINS: Annotated[list[AnyUrl] | str, BeforeValidator(parse_cors)] = []

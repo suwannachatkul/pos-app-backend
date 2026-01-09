@@ -9,7 +9,9 @@ from jsonschema import (
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from api.helpers.cache_manager import cache_manager
 from api.models import PaymentMethod
+from api.schemas.cache import PaymentMethodCache
 
 
 class PaymentMethodService:
@@ -20,7 +22,13 @@ class PaymentMethodService:
 
     async def get_method(self, name: str) -> PaymentMethod:
         """Get active payment method configuration from database."""
-        # TODO: cache results
+        cache_key = cache_manager.generate_key("payment_method", name)
+        cached_method = await cache_manager.get(cache_key, schema=PaymentMethodCache)
+
+        if cached_method:
+            # Reconstruct PaymentMethod from cached schema
+            return PaymentMethod(**cached_method.model_dump())
+
         result = await self.db.execute(
             select(PaymentMethod).where(
                 PaymentMethod.name == name, PaymentMethod.is_active == True
@@ -31,14 +39,34 @@ class PaymentMethodService:
         if not method:
             raise ValueError(f"Unknown or inactive payment method: {name}")
 
+        # Cache using Pydantic schema for validation
+        cache_schema = PaymentMethodCache.model_validate(method)
+        await cache_manager.set(
+            cache_key,
+            cache_schema,
+            ttl=cache_manager.ttl_config.get("payment_method", None),
+        )
+
         return method
 
     async def get_all_active_methods(self) -> list[PaymentMethod]:
-        """Get all active payment methods."""
+        """Get all active payment methods and update cache for each methods."""
         result = await self.db.execute(
             select(PaymentMethod).where(PaymentMethod.is_active == True)
         )
-        return result.scalars().all()
+        methods = result.scalars().all()
+
+        # Cache each method for faster future retrievals
+        for method in methods:
+            cache_key = cache_manager.generate_key("payment_method", method.name)
+            cache_schema = PaymentMethodCache.model_validate(method)
+            await cache_manager.set(
+                cache_key,
+                cache_schema,
+                ttl=cache_manager.ttl_config.get("payment_method", None),
+            )
+
+        return methods
 
     def validate_price_modifier(self, method: PaymentMethod, modifier: float) -> None:
         """Validate price modifier is within allowed range."""
