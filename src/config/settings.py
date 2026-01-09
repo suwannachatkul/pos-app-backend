@@ -41,6 +41,7 @@ class Settings(BaseSettings):
     REDIS_PASSWORD: str | None = None
 
     # Cache config
+    CACHE_ENABLED: bool = True
     CACHE_DEFAULT_TTL: int = 300  # seconds
     PAYMENT_METHOD_CACHE_TTL: int = 300  # seconds
 

@@ -13,6 +13,19 @@ from config.initializers.initialize import InitializeTask
 from config.settings import settings
 
 
+# Disable cache via the cache_manager singleton for the whole test session.
+@pytest.fixture(scope="session", autouse=True)
+def disable_cache_manager():
+    from api.helpers.cache_manager import cache_manager
+
+    prev = cache_manager.is_enabled
+    cache_manager.is_enabled = False
+    try:
+        yield
+    finally:
+        cache_manager.is_enabled = prev
+
+
 # Import shared fixtures
 pytest_plugins = ["tests.fixtures.payment_methods", "tests.fixtures.transactions"]
 
