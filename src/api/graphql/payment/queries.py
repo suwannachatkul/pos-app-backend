@@ -1,8 +1,10 @@
+from datetime import datetime
+
 import strawberry
 
-from api.services.payment import PaymentMethodService
+from api.services.payment import PaymentMethodService, ReportingService
 
-from .dto.outputs import PaymentMethod
+from .dto.outputs import PaymentMethod, SalesReport
 
 
 @strawberry.type
@@ -27,3 +29,16 @@ class PaymentQueries:
             )
             for method in methods
         ]
+
+    @strawberry.field
+    async def sales_report(
+        self,
+        start_datetime: datetime,
+        end_datetime: datetime,
+        info: strawberry.Info,
+        period: str = "hour",
+    ) -> list[SalesReport]:
+        """Get sales report broken down by hour."""
+        db = info.context["db"]
+        service = ReportingService(db)
+        return await service.get_sales_report(start_datetime, end_datetime, period)
