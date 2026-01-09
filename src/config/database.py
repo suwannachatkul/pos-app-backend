@@ -15,7 +15,7 @@ SyncSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=sync_eng
 # Async engine (for FastAPI/GraphQL)
 async_engine = create_async_engine(
     settings.database_url.replace("postgresql+psycopg://", "postgresql+psycopg://"),
-    echo=not settings.is_production,
+    echo=False,
     future=True,
 )
 AsyncSessionLocal = async_sessionmaker(
