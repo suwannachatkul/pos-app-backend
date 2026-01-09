@@ -2,12 +2,7 @@ import strawberry
 
 
 @strawberry.type
-class Query:
-    @strawberry.field
-    def hello(self) -> str:
-        """A simple hello world query."""
-        return "Hello from GraphQL!"
-
+class BaseQuery:
     @strawberry.field
     def health(self) -> str:
         """Health check query."""

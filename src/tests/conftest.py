@@ -9,6 +9,7 @@ from sqlalchemy.orm import Session, sessionmaker
 from api.app import init_app
 from api.models.base import Base
 from config.database import get_sync_db as app_get_sync_db
+from config.initializers.initialize import InitializeTask
 from config.settings import settings
 
 
@@ -29,8 +30,20 @@ def test_engine():
             Base.metadata.drop_all(bind=engine)
 
 
+@pytest.fixture(scope="session")
+def initialize_test_data(test_engine):
+    """Initialize default data for tests using the existing initializer."""
+    SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=test_engine)
+    db = SessionLocal()
+    try:
+        initializer = InitializeTask()
+        initializer.create_default_payment_methods(db)
+    finally:
+        db.close()
+
+
 @pytest.fixture()
-def db_session(test_engine) -> Generator[Session]:
+def db_session(test_engine, initialize_test_data) -> Generator[Session]:
     # Create a connection and begin a transaction
     connection = test_engine.connect()
     transaction = connection.begin()

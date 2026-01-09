@@ -46,7 +46,7 @@ class TestPaymentMethodModel:
     def test_unique_name_constraint(self, db_session):
         """Test that payment method name must be unique."""
         pm1 = PaymentMethod(
-            name="VISA",
+            name="UNIQUE_TEST_METHOD",
             min_modifier=Decimal("1.0000"),
             max_modifier=Decimal("1.0000"),
             points_modifier=Decimal("1.0000"),
@@ -56,7 +56,7 @@ class TestPaymentMethodModel:
 
         # Try to create another payment method with the same name
         pm2 = PaymentMethod(
-            name="VISA",
+            name="UNIQUE_TEST_METHOD",
             min_modifier=Decimal("1.0000"),
             max_modifier=Decimal("1.0000"),
             points_modifier=Decimal("1.0000"),
