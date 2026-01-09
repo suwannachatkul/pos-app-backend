@@ -406,8 +406,21 @@ Response:
         "minModifier": 0.95,
         "maxModifier": 1,
         "pointsModifier": 0.03,
-        "additionalItemSchema": "{\"type\": \"object\", \"properties\": {\"last4\": {\"type\": \"string\"}}}"
+        "additionalItemSchema": {
+          "type": "object",
+          "required": ["last4"],
+          "properties": {
+            "last4": {
+              "type": "string",
+              "pattern": "^[0-9]{4}$",
+              "description": "Last 4 digits of card"
+            }
+          }
+        }
       }
+      .
+      .
+      .
     ]
   }
 }
