@@ -2,9 +2,12 @@ from datetime import datetime
 
 import strawberry
 
-from api.services.payment import PaymentMethodService, ReportingService
+from api.services.payment import PaymentMethodService, ReportingService, ReportPeriod
 
 from .dto.outputs import PaymentMethod, SalesReport
+
+
+ReportPeriodEnum = strawberry.enum(ReportPeriod)
 
 
 @strawberry.type
@@ -36,7 +39,7 @@ class PaymentQueries:
         start_datetime: datetime,
         end_datetime: datetime,
         info: strawberry.Info,
-        period: str = "hour",
+        period: ReportPeriodEnum = ReportPeriodEnum.HOUR,
     ) -> list[SalesReport]:
         """Get sales report broken down by hour."""
         db = info.context["db"]
