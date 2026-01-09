@@ -1,10 +1,10 @@
 # POS E-Commerce Backend API
 
-A scalable GraphQL-based backend for a POS-integrated e-commerce platform with flexible payment methods, commission management, and point systems.
+A sample scalable GraphQL-based backend for a POS-integrated e-commerce platform with payment methods, transactions creation, and sales report.
 
 ## Overview
 
-This system manages payment processing with dynamic commission rates and loyalty points allocation. Built to handle high concurrency and easily extend with new payment methods without code changes.
+This system manages payment processing with dynamic price rates and points modifiers. Compatible to handle high concurrency and easily extend with new payment methods without code changes.
 
 **Key Features:**
 
@@ -17,9 +17,7 @@ This system manages payment processing with dynamic commission rates and loyalty
 
 ## Project Structure
 
-### Layered Architecture with Domain Modules
-
-The project uses combining layered structure (models, services, graphql) with domain-based modules within each layer. Try to balances technical separation with business logic grouping:
+The project uses combining layered structure (models, services, graphql, REST) with domain-based modules within each layer. Try to balance technical separation with business logic grouping
 
 ```
 pos-app-backend/
@@ -68,12 +66,11 @@ pos-app-backend/
 
 1. **Domain Isolation** - Each business domain is self-contained and independent
 2. **Team Scalability** - Multiple devs can work on different domains without conflicts
-3. **Clear Boundaries** - Easy to understand what code belongs where
-4. **Easy to Understand** - Related code lives together (queries, mutations, services, models)
-5. **Testability** - Test each domain in isolation
-6. **Maintainability** - Changes to payment logic don't affect order logic
+3. **Clear Boundaries** - Easy to understand what code belongs where, related code lives together (queries, mutations, services, models)
+4. **Testability** - Test each domain in isolation
+5. **Maintainability** - Changes to payment logic don't affect order logic
 
-### Example Flow
+### Example Process Flow
 
 ```
 GraphQL Request
@@ -111,7 +108,7 @@ PostgreSQL Database
 ### 1. Clone & Setup
 
 ```bash
-git clone <repository-url>
+git clone git@github.com:suwannachatkul/pos-app-backend.git
 cd pos-app-backend
 cp .env.example .env
 ```
@@ -133,7 +130,7 @@ The API will be available at:
 
 ### 3. Database Migrations
 
-Migrations run automatically on startup, or manually:
+Migrations run automatically on startup ([entrypoint.sh](./scripts/entrypoint.sh)) for ease of running this project without extra commands, but you can also manually run:
 
 ```bash
 # Create new migration
