@@ -1,6 +1,7 @@
 from datetime import datetime
 
 import strawberry
+from strawberry.scalars import ID
 
 
 @strawberry.input
@@ -23,7 +24,7 @@ class AdditionalItemInput:
 
 @strawberry.input
 class ProcessPaymentInput:
-    customer_id: int
+    customer_id: ID
     price: float
     price_modifier: float
     payment_method: str
