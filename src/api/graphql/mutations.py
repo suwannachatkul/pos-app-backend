@@ -2,7 +2,7 @@ import strawberry
 
 
 @strawberry.type
-class Mutation:
+class BaseMutation:
     @strawberry.mutation
     def placeholder(self) -> str:
         """Placeholder mutation - replace with your actual mutations."""
