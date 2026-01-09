@@ -84,7 +84,7 @@ payment/payment_method.py (database model)
 PostgreSQL Database
 ```
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 | Category         | Technology              |
 | ---------------- | ----------------------- |
@@ -159,7 +159,7 @@ Tests use an isolated PostgreSQL instance (`postgres_test`) to avoid affecting d
 
 ### GitHub Actions Workflow
 
-Automated CI pipeline runs on every push and pull request:
+Automated CI pipeline runs on pull request:
 
 **Pipeline Steps:**
 
