@@ -18,7 +18,7 @@ def transaction_basic_cash(db_session, payment_method_cash):
         final_price=Decimal("95.00"),
         points=5,
         payment_method=payment_method_cash.name,
-        transaction_datetime=datetime(2025, 1, 15, 10, 0, 0, tzinfo=UTC),
+        datetime=datetime(2025, 1, 15, 10, 0, 0, tzinfo=UTC),
     )
     db_session.add(transaction)
     db_session.commit()
@@ -37,7 +37,7 @@ def transaction_credit_card(db_session, payment_method_credit_card):
         points=7,
         payment_method=payment_method_credit_card.name,
         additional_item={"last4": "1234", "card_type": "VISA"},
-        transaction_datetime=datetime(2025, 1, 16, 14, 30, 0, tzinfo=UTC),
+        datetime=datetime(2025, 1, 16, 14, 30, 0, tzinfo=UTC),
     )
     db_session.add(transaction)
     db_session.commit()
@@ -56,7 +56,7 @@ def transaction_bank_transfer(db_session, payment_method_bank_transfer):
         points=0,
         payment_method=payment_method_bank_transfer.name,
         additional_item={"bank": "Test Bank", "account_number": "123456789"},
-        transaction_datetime=datetime(2025, 1, 17, 9, 15, 0, tzinfo=UTC),
+        datetime=datetime(2025, 1, 17, 9, 15, 0, tzinfo=UTC),
     )
     db_session.add(transaction)
     db_session.commit()
@@ -74,7 +74,7 @@ def transaction_no_payment_method(db_session):
         final_price=Decimal("50.00"),
         points=1,
         payment_method=None,
-        transaction_datetime=datetime(2025, 1, 18, 16, 45, 0, tzinfo=UTC),
+        datetime=datetime(2025, 1, 18, 16, 45, 0, tzinfo=UTC),
     )
     db_session.add(transaction)
     db_session.commit()
@@ -98,7 +98,7 @@ def multiple_transactions_same_customer(
             final_price=Decimal("95.00"),
             points=5,
             payment_method=payment_method_cash.name,
-            transaction_datetime=base_time,
+            datetime=base_time,
         ),
         Transaction(
             customer_id=customer_id,
@@ -107,7 +107,7 @@ def multiple_transactions_same_customer(
             final_price=Decimal("196.00"),
             points=6,
             payment_method=payment_method_credit_card.name,
-            transaction_datetime=base_time,
+            datetime=base_time,
         ),
     ]
     db_session.add_all(transactions)
