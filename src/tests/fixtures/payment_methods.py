@@ -101,7 +101,22 @@ def all_default_payment_methods(db_session):
     """Create all default payment methods as defined in initializer."""
     payment_methods = []
     # TODO: refactor this if DEFAULT_PAYMENT_METHODS move out of initializer
+
+    # Check if payment methods already exist (from session-scoped initialization)
+    existing_methods = db_session.query(PaymentMethod).all()
+    if len(existing_methods) >= len(DEFAULT_PAYMENT_METHODS):
+        # Return existing methods if they're already in the database
+        return existing_methods
+
     for pm_data in DEFAULT_PAYMENT_METHODS:
+        # Check if this specific method already exists
+        existing = (
+            db_session.query(PaymentMethod).filter_by(name=pm_data["name"]).first()
+        )
+        if existing:
+            payment_methods.append(existing)
+            continue
+
         # Convert float modifiers to Decimal for precision
         pm = PaymentMethod(
             name=pm_data["name"],
