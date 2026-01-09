@@ -21,16 +21,10 @@ class PaymentService:
             method, input.price_modifier
         )
 
-        # Validate additional data if provided
-        additional_item = None
-        if input.additional_item:
-            # Convert Strawberry input to dict, exclude None
-            data_dict = {
-                k: v for k, v in input.additional_item.__dict__.items() if v is not None
-            }
-            additional_item = self.payment_method_service.validate_additional_data(
-                method, data_dict
-            )
+        # Validate additional data
+        additional_item = self.payment_method_service.validate_additional_data(
+            method, input.additional_item.to_dict()
+        )
 
         # Calculate final price and points
         final_price = self.payment_method_service.calculate_final_price(
@@ -47,7 +41,7 @@ class PaymentService:
             points=points,
             payment_method=input.payment_method,
             additional_item=additional_item,
-            datetime=input.datetime,
+            transaction_datetime=input.datetime,
         )
 
         self.db.add(transaction)

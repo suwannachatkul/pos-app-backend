@@ -58,7 +58,8 @@ class PaymentMethodService:
         if method.additional_item_schema is None:
             return None
 
-        if data is None:
+        # Ensure data is provided if schema is defined
+        if data is None or data == {}:
             raise ValueError(f"Payment method {method.name} requires additional data")
 
         # Validate using JSON Schema
