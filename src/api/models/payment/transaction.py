@@ -1,9 +1,9 @@
-from datetime import datetime
 from decimal import Decimal
 
 from sqlalchemy import BigInteger, ForeignKey, Integer, Numeric, String
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.sql.sqltypes import TIMESTAMP
 
 from ..base import Base
 from ..common_fields import IdMixin, TimestampsMixin
@@ -26,8 +26,8 @@ class Transaction(Base, IdMixin, TimestampsMixin):
         index=True,
     )
     additional_item: Mapped[dict | None] = mapped_column(JSONB, nullable=True)
-    transaction_datetime: Mapped[datetime] = mapped_column(
-        name="datetime", nullable=False, index=True
+    datetime: Mapped[TIMESTAMP] = mapped_column(
+        TIMESTAMP(timezone=False), nullable=False, index=True
     )
 
     # back populates from PaymentMethod

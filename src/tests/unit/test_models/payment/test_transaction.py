@@ -89,7 +89,7 @@ class TestTransactionModel:
                 final_price=Decimal("100.00"),
                 points=5,
                 payment_method=payment_method.name,
-                transaction_datetime=datetime.now(UTC),
+                datetime=datetime.now(UTC),
             )
             db_session.add(transaction)
 
@@ -120,7 +120,7 @@ class TestTransactionModel:
                 final_price=Decimal("100.00"),
                 points=5,
                 payment_method=payment_method_cash.name,
-                transaction_datetime=datetime(2025, 1, i + 1, 12, 0, 0, tzinfo=UTC),
+                datetime=datetime(2025, 1, i + 1, 12, 0, 0, tzinfo=UTC),
             )
             db_session.add(transaction)
 
@@ -128,8 +128,7 @@ class TestTransactionModel:
 
         # Query by datetime range
         stmt = select(Transaction).where(
-            Transaction.transaction_datetime
-            >= datetime(2025, 1, 2, 0, 0, 0, tzinfo=UTC)
+            Transaction.datetime >= datetime(2025, 1, 2, 0, 0, 0, tzinfo=UTC)
         )
         results = db_session.execute(stmt).scalars().all()
 
@@ -161,7 +160,7 @@ class TestTransactionModel:
             final_price=Decimal("100.00"),
             points=5,
             payment_method=payment_method_cash.name,
-            transaction_datetime=datetime.now(UTC),
+            datetime=datetime.now(UTC),
         )
         db_session.add(transaction)
         db_session.commit()

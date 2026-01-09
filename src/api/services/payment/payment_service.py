@@ -41,7 +41,7 @@ class PaymentService:
             points=points,
             payment_method=input.payment_method,
             additional_item=additional_item,
-            transaction_datetime=input.datetime,
+            datetime=input.datetime,
         )
 
         self.db.add(transaction)
