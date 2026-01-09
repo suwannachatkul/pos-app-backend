@@ -8,12 +8,12 @@ This system manages payment processing with dynamic price rates and points modif
 
 **Key Features:**
 
-- GraphQL API with Strawberry
-- Dynamic payment method configuration
-- Commission-based pricing logic
-- Loyalty points system
-- Horizontal scalability ready
-- Comprehensive test coverage
+- **GraphQL API** - Queries and mutations for payment processing and reporting
+- **Configurable Payment Methods** - Add/edit payment methods via database with custom `additional_item_schema` (JSON Schema validation)
+- **Transaction Processing** - Process payments with dynamic price modifiers and points calculation
+- **Sales Reporting** - Per period aggregated sales (hour, day, week, month) and points data with date range filtering
+- **Redis Caching** - Payment method cached
+- **Full Test Coverage** - Unit and integration tests
 
 ## Project Structure
 
