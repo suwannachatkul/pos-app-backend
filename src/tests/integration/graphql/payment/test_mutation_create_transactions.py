@@ -28,12 +28,16 @@ class TestProcessPayment:
         }
         """
 
+        price = 1000.0
+        price_modifier = 0.95
+        payment_method_name = "CASH"
+
         variables = {
             "input": {
                 "customerId": "1001",
-                "price": 1000.0,
-                "priceModifier": 0.95,
-                "paymentMethod": "CASH",
+                "price": price,
+                "priceModifier": price_modifier,
+                "paymentMethod": payment_method_name,
                 "datetime": datetime.now(UTC).isoformat(),
                 "additionalItem": {},
             }
@@ -50,8 +54,23 @@ class TestProcessPayment:
         result = data["data"]["processPayment"]
         assert "finalPrice" in result
         assert "points" in result
-        assert result["finalPrice"] == 950.0  # 1000 * 0.95
-        assert result["points"] == 50  # 1000 * 0.05
+
+        # Calculate expected values from input
+        expected_final_price = price * price_modifier
+        assert result["finalPrice"] == expected_final_price
+
+        # Get payment method to calculate expected points
+        cash_method = next(
+            (
+                pm
+                for pm in all_default_payment_methods
+                if pm.name == payment_method_name
+            ),
+            None,
+        )
+        assert cash_method is not None
+        expected_points = int(price * float(cash_method.points_modifier))
+        assert result["points"] == expected_points
 
     @pytest.mark.asyncio
     async def test_process_payment_success_with_additional_data(
@@ -73,12 +92,16 @@ class TestProcessPayment:
         }
         """
 
+        price = 2000.0
+        price_modifier = 1.0
+        payment_method_name = "VISA"
+
         variables = {
             "input": {
                 "customerId": "1002",
-                "price": 2000.0,
-                "priceModifier": 1.0,
-                "paymentMethod": "VISA",
+                "price": price,
+                "priceModifier": price_modifier,
+                "paymentMethod": payment_method_name,
                 "datetime": datetime.now(UTC).isoformat(),
                 "additionalItem": {"last4": "1234"},
             }
@@ -93,8 +116,23 @@ class TestProcessPayment:
         assert "errors" not in data or data["errors"] is None
 
         result = data["data"]["processPayment"]
-        assert result["finalPrice"] == 2000.0  # 2000 * 1.0
-        assert result["points"] == 60  # 2000 * 0.03
+
+        # Calculate expected values from input
+        expected_final_price = price * price_modifier
+        assert result["finalPrice"] == expected_final_price
+
+        # Get payment method to calculate expected points
+        visa_method = next(
+            (
+                pm
+                for pm in all_default_payment_methods
+                if pm.name == payment_method_name
+            ),
+            None,
+        )
+        assert visa_method is not None
+        expected_points = int(price * float(visa_method.points_modifier))
+        assert result["points"] == expected_points
 
     @pytest.mark.asyncio
     async def test_process_payment_invalid_modifier(
@@ -116,12 +154,27 @@ class TestProcessPayment:
         }
         """
 
+        payment_method_name = "CASH"
+        # Get payment method to find valid range
+        cash_method = next(
+            (
+                pm
+                for pm in all_default_payment_methods
+                if pm.name == payment_method_name
+            ),
+            None,
+        )
+        assert cash_method is not None
+
+        # Use modifier outside the valid range
+        invalid_modifier = float(cash_method.max_modifier) + 0.5
+
         variables = {
             "input": {
                 "customerId": "1003",
                 "price": 1000.0,
-                "priceModifier": 1.5,  # Out of range (0.9-1.0)
-                "paymentMethod": "CASH",
+                "priceModifier": invalid_modifier,
+                "paymentMethod": payment_method_name,
                 "datetime": datetime.now(UTC).isoformat(),
                 "additionalItem": {},
             }
