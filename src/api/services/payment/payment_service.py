@@ -22,8 +22,11 @@ class PaymentService:
         )
 
         # Validate additional data
+        additional_item = (
+            input.additional_item.to_dict() if input.additional_item else None
+        )
         additional_item = self.payment_method_service.validate_additional_data(
-            method, input.additional_item.to_dict()
+            method, additional_item
         )
 
         # Calculate final price and points
