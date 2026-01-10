@@ -16,7 +16,6 @@ cache = Cache(
 )
 
 # Cache TTL configuration
-# TODO use settings from environment
 CACHE_TTL = {
     "default": settings.CACHE_DEFAULT_TTL,
     "payment_method": settings.PAYMENT_METHOD_CACHE_TTL,

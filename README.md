@@ -425,3 +425,55 @@ Response:
   }
 }
 ```
+
+## Scaling Considerations
+
+### Vertical Scaling (Current Implementation)
+
+**Already Implemented:**
+
+1. **Async I/O** - All database operations use `async`/`await` with SQLAlchemy AsyncSession
+2. **Redis Caching** - Payment methods cached, ready to extend caching to other read-heavy data.
+3. **Connection Pooling** - SQLAlchemy async engine with connection pool (default: 5 connections)
+4. **Non-blocking Operations** - GraphQL resolvers run on FastAPI + Uvicorn
+
+**Additional Optimizations Available:**
+
+1. **Database Connection Pool Tuning** (Configurable via environment variables)
+
+   ```bash
+   # Edit .env
+   DATABASE_POOL_SIZE=20        # Max connections in pool (default: 5)
+   DATABASE_MAX_OVERFLOW=10     # Additional connections (default: 10)
+   ```
+
+2. **Uvicorn Workers** (Production)
+
+   ```bash
+   # Update entrypoint.sh for production
+   uvicorn api.app:app --host 0.0.0.0 --port 8000 --workers 4
+   ```
+
+3. **Redis Connection Pool** (Configurable via environment variables)
+
+   ```bash
+   # Edit .env
+   REDIS_POOL_SIZE=50           # Max connections in pool (default: 50)
+   REDIS_POOL_TIMEOUT=1         # Connection timeout in seconds (default: 1)
+   ```
+
+4. **Query Optimization**
+
+   - Add indexes on expected to be frequently queried columns
+     - PaymentMethod (`name`)
+     - Transaction (`customer_id`, `datetime`, `payment_method`)
+   - Use `selectinload()` for relationship loading instead of lazy loading
+   - No Lazy loading used in PaymentMethod models to avoid N+1 issues
+
+### Horizontal Scaling
+
+**Current Setup:**
+
+- Stateless API design (no local state stored in API server)
+- Shared PostgreSQL for data persistence
+- Redis for distributed caching (Can be shared across instances)
