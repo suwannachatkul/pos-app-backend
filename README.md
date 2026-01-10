@@ -155,31 +155,6 @@ make lint
 
 Tests use an isolated PostgreSQL instance (`postgres_test`) to avoid affecting development data.
 
-## CI/CD Pipeline
-
-### GitHub Actions Workflow
-
-Automated CI pipeline runs on pull request:
-
-**Pipeline Steps:**
-
-1. **Code Linting** - Ruff checks code quality and formatting
-2. **Unit & Integration Tests** - Pytest with PostgreSQL test database
-3. **Coverage Report** - Automated coverage comments on PRs
-
-**(Optional) Pre-commit Hooks:**
-
-- Ruff auto-formatting and linting
-- Validate JSON, YAML, TOML files
-- Spell checking with codespell
-
-**Setup Pre-commit:**
-
-```bash
-pip install pre-commit
-pre-commit install
-```
-
 ## API Usage
 
 ### GraphQL Examples
@@ -325,6 +300,47 @@ Response:
 }
 ```
 
+**Case 5: Error Handling - Invalid Additional Item**
+
+```graphql
+mutation ErrorTest {
+  processPayment(
+    input: {
+      customerId: 1234
+      price: 1000
+      priceModifier: 1.0
+      paymentMethod: "CASH_ON_DELIVERY"
+      datetime: "2022-09-01T04:00:00Z"
+      additionalItem: { courier: "TEST" }
+    }
+  ) {
+    ... on PaymentResult {
+      finalPrice
+      points
+    }
+    ... on GraphQLError {
+      details
+      code
+      message
+    }
+  }
+}
+```
+
+Response:
+
+```json
+{
+  "data": {
+    "processPayment": {
+      "details": null,
+      "code": "INVALID_INPUT",
+      "message": "Invalid additional data for CASH_ON_DELIVERY: 'TEST' is not one of ['YAMATO', 'SAGAWA']"
+    }
+  }
+}
+```
+
 #### Query Sales Report
 
 ```graphql
@@ -426,6 +442,31 @@ Response:
 }
 ```
 
+## CI/CD Pipeline
+
+### GitHub Actions Workflow
+
+Automated CI pipeline runs on pull request:
+
+**Pipeline Steps:**
+
+1. **Code Linting** - Ruff checks code quality and formatting
+2. **Unit & Integration Tests** - Pytest with PostgreSQL test database
+3. **Coverage Report** - Automated coverage comments on PRs
+
+**(Optional) Pre-commit Hooks:**
+
+- Ruff auto-formatting and linting
+- Validate JSON, YAML, TOML files
+- Spell checking with codespell
+
+**Setup Pre-commit:**
+
+```bash
+pip install pre-commit
+pre-commit install
+```
+
 ## Scaling Considerations
 
 ### Vertical Scaling (Current Implementation)
@@ -481,7 +522,7 @@ Response:
 ## Future Update if possible
 
 - More tests (services unit tests not being implement, more test cases/fixtures)
-- Error translation/localization
+- Centralize Error with error translation/localization
 - Hashing sensitive data in additional items (e.g., card last4, bank account number, etc.)
 - Update/Add/Delete payment methods (Maybe REST?)
 - Authentication & Authorization (JWT, OAuth)
