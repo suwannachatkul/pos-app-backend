@@ -12,13 +12,21 @@ class TestAvailablePaymentMethods:
         query = """
         query {
           availablePaymentMethods {
-            id
-            name
-            isActive
-            minModifier
-            maxModifier
-            pointsModifier
-            additionalItemSchema
+            ... on PaymentMethodsResult {
+              methods {
+                id
+                name
+                isActive
+                minModifier
+                maxModifier
+                pointsModifier
+                additionalItemSchema
+              }
+            }
+            ... on GraphQLError {
+              code
+              message
+            }
           }
         }
         """
@@ -29,7 +37,9 @@ class TestAvailablePaymentMethods:
         data = response.json()
         assert "errors" not in data or data["errors"] is None
 
-        payment_methods = data["data"]["availablePaymentMethods"]
+        result = data["data"]["availablePaymentMethods"]
+        assert "methods" in result, "Expected PaymentMethodsResult with methods field"
+        payment_methods = result["methods"]
 
         # Verify response structure
         assert isinstance(payment_methods, list)
@@ -62,8 +72,16 @@ class TestAvailablePaymentMethods:
         query = """
         query {
           availablePaymentMethods {
-            name
-            isActive
+            ... on PaymentMethodsResult {
+              methods {
+                name
+                isActive
+              }
+            }
+            ... on GraphQLError {
+              code
+              message
+            }
           }
         }
         """
@@ -72,7 +90,8 @@ class TestAvailablePaymentMethods:
 
         assert response.status_code == 200
         data = response.json()
-        payment_methods = data["data"]["availablePaymentMethods"]
+        result = data["data"]["availablePaymentMethods"]
+        payment_methods = result["methods"]
 
         # Verify inactive method is not in results
         method_names = [method["name"] for method in payment_methods]
@@ -90,10 +109,18 @@ class TestAvailablePaymentMethods:
         query = """
         query {
           availablePaymentMethods {
-            name
-            minModifier
-            maxModifier
-            pointsModifier
+            ... on PaymentMethodsResult {
+              methods {
+                name
+                minModifier
+                maxModifier
+                pointsModifier
+              }
+            }
+            ... on GraphQLError {
+              code
+              message
+            }
           }
         }
         """
@@ -102,7 +129,8 @@ class TestAvailablePaymentMethods:
 
         assert response.status_code == 200
         data = response.json()
-        payment_methods = data["data"]["availablePaymentMethods"]
+        result = data["data"]["availablePaymentMethods"]
+        payment_methods = result["methods"]
 
         # Verify modifiers are numeric and within expected ranges
         for method in payment_methods:

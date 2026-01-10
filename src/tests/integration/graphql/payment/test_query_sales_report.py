@@ -16,9 +16,17 @@ class TestSalesReport:
         query = """
         query SalesReport($startDatetime: DateTime!, $endDatetime: DateTime!, $period: ReportPeriod!) {
           salesReport(startDatetime: $startDatetime, endDatetime: $endDatetime, period: $period) {
-            datetime
-            sales
-            points
+            ... on SalesReportResult {
+              reports {
+                datetime
+                sales
+                points
+              }
+            }
+            ... on GraphQLError {
+              code
+              message
+            }
           }
         }
         """
@@ -41,7 +49,9 @@ class TestSalesReport:
         data = response.json()
         assert "errors" not in data or data["errors"] is None
 
-        reports = data["data"]["salesReport"]
+        result = data["data"]["salesReport"]
+        assert "reports" in result, "Expected SalesReportResult with reports field"
+        reports = result["reports"]
 
         # Should return a list with proper structure
         assert isinstance(reports, list)
@@ -66,9 +76,17 @@ class TestSalesReport:
         query = """
         query SalesReport($startDatetime: DateTime!, $endDatetime: DateTime!, $period: ReportPeriod!) {
           salesReport(startDatetime: $startDatetime, endDatetime: $endDatetime, period: $period) {
-            datetime
-            sales
-            points
+            ... on SalesReportResult {
+              reports {
+                datetime
+                sales
+                points
+              }
+            }
+            ... on GraphQLError {
+              code
+              message
+            }
           }
         }
         """
@@ -92,7 +110,8 @@ class TestSalesReport:
         data = response.json()
         assert "errors" not in data or data["errors"] is None
 
-        reports = data["data"]["salesReport"]
+        result = data["data"]["salesReport"]
+        reports = result["reports"]
 
         # Should have reports with zero values (empty periods included)
         assert isinstance(reports, list)
@@ -111,9 +130,17 @@ class TestSalesReport:
         query = """
         query SalesReport($startDatetime: DateTime!, $endDatetime: DateTime!, $period: ReportPeriod!) {
           salesReport(startDatetime: $startDatetime, endDatetime: $endDatetime, period: $period) {
-            datetime
-            sales
-            points
+            ... on SalesReportResult {
+              reports {
+                datetime
+                sales
+                points
+              }
+            }
+            ... on GraphQLError {
+              code
+              message
+            }
           }
         }
         """
@@ -137,7 +164,8 @@ class TestSalesReport:
         data = response.json()
         assert "errors" not in data or data["errors"] is None
 
-        reports = data["data"]["salesReport"]
+        result = data["data"]["salesReport"]
+        reports = result["reports"]
         assert isinstance(reports, list)
 
         # Calculate expected number of hours (inclusive)
@@ -159,9 +187,17 @@ class TestSalesReport:
         query = """
         query SalesReport($startDatetime: DateTime!, $endDatetime: DateTime!) {
           salesReport(startDatetime: $startDatetime, endDatetime: $endDatetime) {
-            datetime
-            sales
-            points
+            ... on SalesReportResult {
+              reports {
+                datetime
+                sales
+                points
+              }
+            }
+            ... on GraphQLError {
+              code
+              message
+            }
           }
         }
         """
@@ -184,7 +220,9 @@ class TestSalesReport:
         assert "data" in data
         assert "salesReport" in data["data"]
 
-        reports = data["data"]["salesReport"]
+        result = data["data"]["salesReport"]
+        assert "reports" in result
+        reports = result["reports"]
         assert isinstance(reports, list)
         assert len(reports) > 0
 
