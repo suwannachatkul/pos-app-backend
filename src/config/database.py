@@ -17,6 +17,9 @@ async_engine = create_async_engine(
     settings.database_url.replace("postgresql+psycopg://", "postgresql+psycopg://"),
     echo=False,
     future=True,
+    pool_size=settings.DATABASE_POOL_SIZE,
+    max_overflow=settings.DATABASE_MAX_OVERFLOW,
+    pool_pre_ping=True,
 )
 AsyncSessionLocal = async_sessionmaker(
     bind=async_engine,

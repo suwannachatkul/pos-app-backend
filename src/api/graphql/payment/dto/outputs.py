@@ -26,3 +26,17 @@ class SalesReport:
     datetime: dt
     sales: float
     points: int
+
+
+@strawberry.type
+class PaymentMethodsResult:
+    """Wrapper for list of payment methods to enable union with error type."""
+
+    methods: list[PaymentMethod]
+
+
+@strawberry.type
+class SalesReportResult:
+    """Wrapper for list of sales reports to enable union with error type."""
+
+    reports: list[SalesReport]

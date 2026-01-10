@@ -4,6 +4,8 @@ from datetime import UTC, datetime
 
 import pytest
 
+from api.graphql.payment.queries import ReportPeriodEnum
+
 
 class TestSalesReport:
     """Test sales_report GraphQL query."""
@@ -12,18 +14,26 @@ class TestSalesReport:
     async def test_sales_report_basic_functionality(self, client):
         """Test sales report query works and returns correct structure."""
         query = """
-        query SalesReport($startDatetime: DateTime!, $endDatetime: DateTime!, $period: String!) {
+        query SalesReport($startDatetime: DateTime!, $endDatetime: DateTime!, $period: ReportPeriod!) {
           salesReport(startDatetime: $startDatetime, endDatetime: $endDatetime, period: $period) {
-            datetime
-            sales
-            points
+            ... on SalesReportResult {
+              reports {
+                datetime
+                sales
+                points
+              }
+            }
+            ... on GraphQLError {
+              code
+              message
+            }
           }
         }
         """
 
         start_dt = datetime(2025, 1, 1, 0, 0, 0, tzinfo=UTC)
         end_dt = datetime(2025, 1, 2, 23, 59, 59, tzinfo=UTC)
-        period = "day"
+        period = ReportPeriodEnum.DAY.name
 
         variables = {
             "startDatetime": start_dt.isoformat(),
@@ -39,7 +49,9 @@ class TestSalesReport:
         data = response.json()
         assert "errors" not in data or data["errors"] is None
 
-        reports = data["data"]["salesReport"]
+        result = data["data"]["salesReport"]
+        assert "reports" in result, "Expected SalesReportResult with reports field"
+        reports = result["reports"]
 
         # Should return a list with proper structure
         assert isinstance(reports, list)
@@ -62,11 +74,19 @@ class TestSalesReport:
     async def test_sales_report_empty_period(self, client):
         """Test sales report returns empty results for period with no transactions."""
         query = """
-        query SalesReport($startDatetime: DateTime!, $endDatetime: DateTime!, $period: String!) {
+        query SalesReport($startDatetime: DateTime!, $endDatetime: DateTime!, $period: ReportPeriod!) {
           salesReport(startDatetime: $startDatetime, endDatetime: $endDatetime, period: $period) {
-            datetime
-            sales
-            points
+            ... on SalesReportResult {
+              reports {
+                datetime
+                sales
+                points
+              }
+            }
+            ... on GraphQLError {
+              code
+              message
+            }
           }
         }
         """
@@ -74,7 +94,7 @@ class TestSalesReport:
         # Query for a future date range with no transactions
         start_dt = datetime(2030, 1, 1, 0, 0, 0, tzinfo=UTC)
         end_dt = datetime(2030, 1, 1, 23, 59, 59, tzinfo=UTC)
-        period = "day"
+        period = ReportPeriodEnum.DAY.name
 
         variables = {
             "startDatetime": start_dt.isoformat(),
@@ -90,7 +110,8 @@ class TestSalesReport:
         data = response.json()
         assert "errors" not in data or data["errors"] is None
 
-        reports = data["data"]["salesReport"]
+        result = data["data"]["salesReport"]
+        reports = result["reports"]
 
         # Should have reports with zero values (empty periods included)
         assert isinstance(reports, list)
@@ -107,11 +128,19 @@ class TestSalesReport:
     async def test_sales_report_hourly_period(self, client):
         """Test sales report with hourly period parameter."""
         query = """
-        query SalesReport($startDatetime: DateTime!, $endDatetime: DateTime!, $period: String!) {
+        query SalesReport($startDatetime: DateTime!, $endDatetime: DateTime!, $period: ReportPeriod!) {
           salesReport(startDatetime: $startDatetime, endDatetime: $endDatetime, period: $period) {
-            datetime
-            sales
-            points
+            ... on SalesReportResult {
+              reports {
+                datetime
+                sales
+                points
+              }
+            }
+            ... on GraphQLError {
+              code
+              message
+            }
           }
         }
         """
@@ -119,7 +148,7 @@ class TestSalesReport:
         # Query for hourly breakdown
         start_dt = datetime(2025, 1, 15, 10, 0, 0, tzinfo=UTC)
         end_dt = datetime(2025, 1, 15, 13, 59, 59, tzinfo=UTC)
-        period = "hour"
+        period = ReportPeriodEnum.HOUR.name
 
         variables = {
             "startDatetime": start_dt.isoformat(),
@@ -135,7 +164,8 @@ class TestSalesReport:
         data = response.json()
         assert "errors" not in data or data["errors"] is None
 
-        reports = data["data"]["salesReport"]
+        result = data["data"]["salesReport"]
+        reports = result["reports"]
         assert isinstance(reports, list)
 
         # Calculate expected number of hours (inclusive)
@@ -157,9 +187,17 @@ class TestSalesReport:
         query = """
         query SalesReport($startDatetime: DateTime!, $endDatetime: DateTime!) {
           salesReport(startDatetime: $startDatetime, endDatetime: $endDatetime) {
-            datetime
-            sales
-            points
+            ... on SalesReportResult {
+              reports {
+                datetime
+                sales
+                points
+              }
+            }
+            ... on GraphQLError {
+              code
+              message
+            }
           }
         }
         """
@@ -182,7 +220,9 @@ class TestSalesReport:
         assert "data" in data
         assert "salesReport" in data["data"]
 
-        reports = data["data"]["salesReport"]
+        result = data["data"]["salesReport"]
+        assert "reports" in result
+        reports = result["reports"]
         assert isinstance(reports, list)
         assert len(reports) > 0
 

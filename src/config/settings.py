@@ -26,6 +26,9 @@ class Settings(BaseSettings):
     DATABASE_NAME: str
     DATABASE_USERNAME: str
     DATABASE_PASSWORD: str
+    # Database pool config
+    DATABASE_POOL_SIZE: int = 5
+    DATABASE_MAX_OVERFLOW: int = 10
 
     # Database (test)
     DATABASE_TEST_HOST: str = "postgres_test"
@@ -39,6 +42,9 @@ class Settings(BaseSettings):
     REDIS_PORT: int = 6379
     REDIS_DB: int = 0
     REDIS_PASSWORD: str | None = None
+    # Redis pool config
+    REDIS_POOL_SIZE: int = 50
+    REDIS_POOL_TIMEOUT: int = 1
 
     # Cache config
     CACHE_ENABLED: bool = True
