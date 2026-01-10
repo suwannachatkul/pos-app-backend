@@ -9,9 +9,10 @@ cache = Cache(
     Cache.REDIS,
     endpoint=settings.REDIS_HOST,
     port=settings.REDIS_PORT,
-    timeout=1,
+    timeout=settings.REDIS_POOL_TIMEOUT,
     serializer=JsonSerializer(),
     namespace="payment_app",  # Prefix for all keys
+    pool_max_size=settings.REDIS_POOL_SIZE,
 )
 
 # Cache TTL configuration
