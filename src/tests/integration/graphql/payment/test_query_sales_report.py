@@ -4,6 +4,8 @@ from datetime import UTC, datetime
 
 import pytest
 
+from api.graphql.payment.queries import ReportPeriodEnum
+
 
 class TestSalesReport:
     """Test sales_report GraphQL query."""
@@ -12,7 +14,7 @@ class TestSalesReport:
     async def test_sales_report_basic_functionality(self, client):
         """Test sales report query works and returns correct structure."""
         query = """
-        query SalesReport($startDatetime: DateTime!, $endDatetime: DateTime!, $period: String!) {
+        query SalesReport($startDatetime: DateTime!, $endDatetime: DateTime!, $period: ReportPeriod!) {
           salesReport(startDatetime: $startDatetime, endDatetime: $endDatetime, period: $period) {
             datetime
             sales
@@ -23,7 +25,7 @@ class TestSalesReport:
 
         start_dt = datetime(2025, 1, 1, 0, 0, 0, tzinfo=UTC)
         end_dt = datetime(2025, 1, 2, 23, 59, 59, tzinfo=UTC)
-        period = "day"
+        period = ReportPeriodEnum.DAY.name
 
         variables = {
             "startDatetime": start_dt.isoformat(),
@@ -62,7 +64,7 @@ class TestSalesReport:
     async def test_sales_report_empty_period(self, client):
         """Test sales report returns empty results for period with no transactions."""
         query = """
-        query SalesReport($startDatetime: DateTime!, $endDatetime: DateTime!, $period: String!) {
+        query SalesReport($startDatetime: DateTime!, $endDatetime: DateTime!, $period: ReportPeriod!) {
           salesReport(startDatetime: $startDatetime, endDatetime: $endDatetime, period: $period) {
             datetime
             sales
@@ -74,7 +76,7 @@ class TestSalesReport:
         # Query for a future date range with no transactions
         start_dt = datetime(2030, 1, 1, 0, 0, 0, tzinfo=UTC)
         end_dt = datetime(2030, 1, 1, 23, 59, 59, tzinfo=UTC)
-        period = "day"
+        period = ReportPeriodEnum.DAY.name
 
         variables = {
             "startDatetime": start_dt.isoformat(),
@@ -107,7 +109,7 @@ class TestSalesReport:
     async def test_sales_report_hourly_period(self, client):
         """Test sales report with hourly period parameter."""
         query = """
-        query SalesReport($startDatetime: DateTime!, $endDatetime: DateTime!, $period: String!) {
+        query SalesReport($startDatetime: DateTime!, $endDatetime: DateTime!, $period: ReportPeriod!) {
           salesReport(startDatetime: $startDatetime, endDatetime: $endDatetime, period: $period) {
             datetime
             sales
@@ -119,7 +121,7 @@ class TestSalesReport:
         # Query for hourly breakdown
         start_dt = datetime(2025, 1, 15, 10, 0, 0, tzinfo=UTC)
         end_dt = datetime(2025, 1, 15, 13, 59, 59, tzinfo=UTC)
-        period = "hour"
+        period = ReportPeriodEnum.HOUR.name
 
         variables = {
             "startDatetime": start_dt.isoformat(),
