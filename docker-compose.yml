@@ -45,6 +45,8 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    profiles:
+      - test
 
   api:
     build:
@@ -54,7 +56,6 @@ services:
     working_dir: /src
     volumes:
       - ./src:/src:rw
-      - ./pyproject.toml:/src/pyproject.toml:rw
       - ./data:/data:rw
     ports:
       - ${API_EXT_PORT:-8000}:8000
@@ -65,9 +66,23 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      redis:
+        condition: service_healthy
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:8000/health || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 5
       start_period: 30s
+
+  redis:
+    image: redis:8-alpine
+    ports:
+      - "${REDIS_EXT_PORT:-6379}:6379"
+    volumes:
+      - ${REDIS_LOCAL_MOUNT_POSITION}:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5

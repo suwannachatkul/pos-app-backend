@@ -13,6 +13,10 @@ alembic==1.17.2
 # Configuration
 pydantic>=2.8.2
 pydantic-settings>=2.5.2
+jsonschema>=4.26.0
+
+# Caching
+aiocache[redis]==0.12.2
 
 # Development Tools
 pytest>=8.3.4

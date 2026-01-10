@@ -6,14 +6,16 @@ from fastapi.middleware.cors import CORSMiddleware
 from starlette.responses import JSONResponse
 
 from api.graphql.schema import create_graphql_router
+from config.initializers.initialize import initialize_task
 from config.settings import settings
 from shared.logging import logger
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
+async def lifespan(app: FastAPI) -> AsyncGenerator[None]:
     try:
         logger.info("Initializing API with startup event")
+        initialize_task.start()
         yield
     finally:
         logger.info("Shutting down API with shutdown event")
