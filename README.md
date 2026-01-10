@@ -477,3 +477,16 @@ Response:
 - Stateless API design (no local state stored in API server)
 - Shared PostgreSQL for data persistence
 - Redis for distributed caching (Can be shared across instances)
+
+## Future Update if possible
+
+- More tests (services unit tests not being implement, more test cases/fixtures)
+- Error translation/localization
+- Hashing sensitive data in additional items (e.g., card last4, bank account number, etc.)
+- Update/Add/Delete payment methods (Maybe REST?)
+- Authentication & Authorization (JWT, OAuth)
+- More customizable sales reports (filter/group by payment method, customer, etc.)
+- Limit sales report query range (e.g., max 1 month, max transactions)
+- Cache strategy for transactions/sales reports (Is it worth caching?)
+- Integration with other services (external payment gateways, customer management)
+- Currency support & conversion

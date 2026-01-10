@@ -16,6 +16,7 @@ cache = Cache(
 )
 
 # Cache TTL configuration
+# TODO move some TTLs to services scope if needed
 CACHE_TTL = {
     "default": settings.CACHE_DEFAULT_TTL,
     "payment_method": settings.PAYMENT_METHOD_CACHE_TTL,
