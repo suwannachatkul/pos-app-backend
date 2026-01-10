@@ -120,7 +120,7 @@ cp .env.example .env
 make dev
 
 # Or manually
-docker-compose up --build
+docker-compose up -d
 ```
 
 The API will be available at:
