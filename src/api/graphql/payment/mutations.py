@@ -22,9 +22,11 @@ class PaymentMutations:
             return result
         except ValueError as e:
             logger.exception("ValueError in process_payment", exc_info=e)
+            # TODO: centralize error handling codes/messages
             return GraphQLError(code="INVALID_INPUT", message=str(e))
         except Exception as e:
             logger.exception("Unexpected error in process_payment", exc_info=e)
+            # TODO: centralize error handling codes/messages
             return GraphQLError(
                 code="INTERNAL_ERROR",
                 message="An unexpected error occurred",

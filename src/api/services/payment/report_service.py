@@ -66,6 +66,12 @@ class ReportingService:
         include_empty_periods: bool = True,
     ) -> list[SalesReport]:
         """Get sales broken down by the given `period` using PostgreSQL aggregation."""
+        # Validate date range
+        if start >= end:
+            raise ValueError(
+                f"start_datetime ({start}) must be before end_datetime ({end})"
+            )
+
         truncated = func.date_trunc(period, Transaction.datetime).label("period")
 
         query = (
