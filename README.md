@@ -349,9 +349,18 @@ query {
     startDatetime: "2022-09-01T00:00:00Z"
     endDatetime: "2022-09-01T03:00:00Z"
   ) {
-    datetime
-    points
-    sales
+    ... on SalesReportResult {
+      reports {
+        datetime
+        points
+        sales
+      }
+    }
+    ... on GraphQLError {
+      code
+      message
+      details
+    }
   }
 }
 ```
@@ -361,28 +370,30 @@ Response:
 ```json
 {
   "data": {
-    "salesReport": [
-      {
-        "datetime": "2022-09-01T00:00:00",
-        "points": 340,
-        "sales": 8000
-      },
-      {
-        "datetime": "2022-09-01T01:00:00",
-        "points": 200,
-        "sales": 6000
-      },
-      {
-        "datetime": "2022-09-01T02:00:00",
-        "points": 0,
-        "sales": 0
-      },
-      {
-        "datetime": "2022-09-01T03:00:00",
-        "points": 0,
-        "sales": 2000
-      }
-    ]
+    "salesReport": {
+      "reports": [
+        {
+          "datetime": "2022-09-01T00:00:00",
+          "points": 340,
+          "sales": 8000
+        },
+        {
+          "datetime": "2022-09-01T01:00:00",
+          "points": 200,
+          "sales": 6000
+        },
+        {
+          "datetime": "2022-09-01T02:00:00",
+          "points": 0,
+          "sales": 0
+        },
+        {
+          "datetime": "2022-09-01T03:00:00",
+          "points": 0,
+          "sales": 2000
+        }
+      ]
+    }
   }
 }
 ```
@@ -392,12 +403,21 @@ Response:
 ```graphql
 query {
   availablePaymentMethods {
-    id
-    name
-    minModifier
-    maxModifier
-    pointsModifier
-    additionalItemSchema
+    ... on PaymentMethodsResult {
+      methods {
+        id
+        name
+        minModifier
+        maxModifier
+        pointsModifier
+        additionalItemSchema
+      }
+    }
+    ... on GraphQLError {
+      code
+      message
+      details
+    }
   }
 }
 ```
@@ -407,37 +427,39 @@ Response:
 ```json
 {
   "data": {
-    "availablePaymentMethods": [
-      {
-        "id": "1",
-        "name": "CASH",
-        "minModifier": 0.9,
-        "maxModifier": 1,
-        "pointsModifier": 0.05,
-        "additionalItemSchema": null
-      },
-      {
-        "id": "2",
-        "name": "VISA",
-        "minModifier": 0.95,
-        "maxModifier": 1,
-        "pointsModifier": 0.03,
-        "additionalItemSchema": {
-          "type": "object",
-          "required": ["last4"],
-          "properties": {
-            "last4": {
-              "type": "string",
-              "pattern": "^[0-9]{4}$",
-              "description": "Last 4 digits of card"
+    "availablePaymentMethods": {
+      "methods": [
+        {
+          "id": "1",
+          "name": "CASH",
+          "minModifier": 0.9,
+          "maxModifier": 1,
+          "pointsModifier": 0.05,
+          "additionalItemSchema": null
+        },
+        {
+          "id": "2",
+          "name": "VISA",
+          "minModifier": 0.95,
+          "maxModifier": 1,
+          "pointsModifier": 0.03,
+          "additionalItemSchema": {
+            "type": "object",
+            "required": ["last4"],
+            "properties": {
+              "last4": {
+                "type": "string",
+                "pattern": "^[0-9]{4}$",
+                "description": "Last 4 digits of card"
+              }
             }
           }
         }
-      }
-      .
-      .
-      .
-    ]
+        .
+        .
+        .
+      ]
+    }
   }
 }
 ```
